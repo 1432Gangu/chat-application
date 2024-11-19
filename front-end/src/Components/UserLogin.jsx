@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FaChartBar } from "react-icons/fa6";
+import CircleNotificationsIcon from '@mui/icons-material/CircleNotifications';
 import _ from "lodash";
 import "../style.css";
 
@@ -29,7 +30,7 @@ const UserLogin = ({ setUser }) => {
     <div className="login_container">
       <div className="login_title">
         <FaChartBar className="login_icon" />
-        <h1>Chat App</h1>
+        <h1> Chat App</h1>
       </div>
       <div className="login_form">
         <input
