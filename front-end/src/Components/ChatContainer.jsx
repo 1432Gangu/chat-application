@@ -90,9 +90,12 @@ const socket = socketIOClient("http://localhost:3002/");
 const ChatContainer = () => {
   const [user, setUser] = useState(localStorage.getItem("user"));
   const [chats, setChats] = useState([]);
+  const [notification, setNotification] = useState(null); // Add notification state
 
   useEffect(() => {
-    if (!user) return; 
+    if (!user) return;
+
+    // Listen for chats and messages
     socket.on("chat", (chats) => {
       setChats(chats);
     });
@@ -101,11 +104,20 @@ const ChatContainer = () => {
       setChats((prevChats) => [...prevChats, msg]);
     });
 
+    // Listen for notifications
+    socket.on("notification", (data) => {
+      setNotification(data.message);
+
+      // Clear the notification after 3 seconds
+      setTimeout(() => setNotification(null), 3000);
+    });
+
     return () => {
       socket.off("chat");
       socket.off("message");
+      socket.off("notification");
     };
-  }, [user]); 
+  }, [user]);
 
   const addMessage = (chat) => {
     const newChat = {
@@ -119,8 +131,7 @@ const ChatContainer = () => {
   const Logout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("avatar");
-    setUser(""); 
-    
+    setUser("");
   };
 
   return (
@@ -136,6 +147,10 @@ const ChatContainer = () => {
               <strong>Logout</strong>
             </p>
           </div>
+
+          {/* Show real-time notification */}
+          {notification && <div className="notification">{notification}</div>}
+
           <ChatLists chats={chats} socket={socket} />
           <InputText addMessage={addMessage} />
         </div>
