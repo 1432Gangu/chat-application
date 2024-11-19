@@ -178,10 +178,48 @@
     font-size: 18px,
 }
 
-  
-
 .container{
     position: relative;
-    left: 65%;
+    left: 60%;
     
   } 
+  .audioFile {
+    margin-bottom: 10px;
+    width: 17%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .notification_wrapper {
+    position: relative;
+  }
+  
+  @keyframes bounce {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+  
+  .notification_bell {
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+  
+  .notification_count {
+    position: absolute;
+    top: -5px;
+    right: -19px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 1px 10px;
+    font-size: 13px;
+    font-weight: bold;
+  }
+  
+  

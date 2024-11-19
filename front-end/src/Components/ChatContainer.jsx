@@ -84,28 +84,33 @@ import ChatLists from "./ChatLists";
 import InputText from "./InputText";
 import UserLogin from "./UserLogin";
 import socketIOClient from "socket.io-client";
+import NotificationsIcon from '@mui/icons-material/Notifications';
 
 const socket = socketIOClient("http://localhost:3002/");
 
 const ChatContainer = () => {
   const [user, setUser] = useState(localStorage.getItem("user"));
   const [chats, setChats] = useState([]);
+  const [notificationCount, setNotificationCount] = useState(0);
 
   useEffect(() => {
-    if (!user) return; 
+    if (!user) return;
+
+    // Listen for chats and messages
     socket.on("chat", (chats) => {
       setChats(chats);
     });
 
     socket.on("message", (msg) => {
       setChats((prevChats) => [...prevChats, msg]);
+      setNotificationCount((prevCount) => prevCount + 1);
     });
 
     return () => {
       socket.off("chat");
       socket.off("message");
     };
-  }, [user]); 
+  }, [user]);
 
   const addMessage = (chat) => {
     const newChat = {
@@ -116,11 +121,14 @@ const ChatContainer = () => {
     socket.emit("newMessage", newChat);
   };
 
+  const resetNotifications = () => {
+    setNotificationCount(0);
+  };
+
   const Logout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("avatar");
-    setUser(""); 
-    
+    setUser("");
   };
 
   return (
@@ -128,13 +136,19 @@ const ChatContainer = () => {
       {user ? (
         <div className="home">
           <div className="chats_header">
-            <h4>Username: {user}</h4>
+            <h4> Username: {user}</h4>
             <p>
               <FaYoutube className="chats_icon" /> Code With GANGADHAR
             </p>
             <p className="chats_logout" onClick={Logout}>
               <strong>Logout</strong>
             </p>
+            <div className="notification_bell" onClick={resetNotifications}>
+              <NotificationsIcon />
+              {notificationCount > 0 && (
+                <span className="notification_count">{notificationCount}</span>
+              )}
+            </div>
           </div>
           <ChatLists chats={chats} socket={socket} />
           <InputText addMessage={addMessage} />
